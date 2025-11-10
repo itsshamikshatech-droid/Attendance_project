@@ -1,0 +1,30 @@
+[
+  {
+    "username": "Shamiksha Anandkumar",
+    "status": "Present",
+    "checkin": "02:33",
+    "checkout": "02:33",
+    "date": "9/11/2025"
+  },
+  {
+    "username": "Shamiksha",
+    "status": "Present",
+    "checkin": "07:00",
+    "checkout": "17:30",
+    "date": "9/11/2025"
+  },
+  {
+    "username": "Sruthi",
+    "status": "Present",
+    "checkin": "07:45",
+    "checkout": "16:30",
+    "date": "10/11/2025"
+  },
+  {
+    "username": "varun",
+    "status": "Present",
+    "checkin": "08:45",
+    "checkout": "18:50",
+    "date": "10/11/2025"
+  }
+]

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Sign Up</title>
+</head>
+<body>
+  <fieldset>
+    <legend><b>Create an account</b></legend>
+
+    <form id="signupForm">
+      <label>Full Name</label><br>
+      <input type="text" id="name" placeholder="Full name" required><br><br>
+
+      <label>Email ID</label><br>
+      <input type="email" id="email" placeholder="name@gmail.com" required><br><br>
+
+      <label>Password</label><br>
+      <input type="password" id="password" required><br><br>
+
+      <input type="submit" value="Sign Up">
+    </form>
+
+    <p>Already have an account? <a href="login.html">Login</a></p>
+  </fieldset>
+
+<script>
+document.getElementById("signupForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  if (!name || !email || !password) {
+    alert("Please fill all fields.");
+    return;
+  }
+
+  const res = await fetch("/signup", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, email, password })
+  });
+
+  const data = await res.json();
+  alert(data.message || (data.success ? "Signup successful" : "Signup failed"));
+
+  if (data.success) {
+    window.location.href = "login.html";
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Admin Dashboard</title>
+</head>
+<body>
+  <fieldset>
+    <legend><b>Admin Dashboard</b></legend>
+
+    <button id="logout" style="float:right;">Logout</button>
+
+    <h3>Attendance Management</h3>
+
+    <div style="display: flex; flex-direction: column; gap: 8px;" id="userContainer">
+      <!-- Rows will be added dynamically -->
+    </div>
+  </fieldset>
+
+<script>
+// --- Protect Admin Page ---
+const admin = JSON.parse(localStorage.getItem("user"));
+if (!admin || admin.role !== "admin") {
+  alert("Access denied!");
+  window.location.href = "login.html";
+}
+
+// --- Load All Users ---
+async function loadUsers() {
+  try {
+    const res = await fetch("/users");
+    const users = await res.json();
+
+    const container = document.getElementById("userContainer");
+    container.innerHTML = "";
+
+    // Header Row
+    const header = document.createElement("div");
+    header.style.display = "flex";
+    header.style.gap = "10px";
+    header.style.fontWeight = "bold";
+    header.innerHTML = `
+      <div style="width:150px;">Name</div>
+      <div style="width:120px;">Check-In</div>
+      <div style="width:120px;">Check-Out</div>
+      <div style="width:120px;">Status</div>
+      <div style="width:100px;">Action</div>
+    `;
+    container.appendChild(header);
+
+    // User Rows
+    users.forEach(u => {
+      const row = document.createElement("div");
+      row.style.display = "flex";
+      row.style.gap = "10px";
+      row.style.alignItems = "center";
+
+      row.innerHTML = `
+        <div style="width:150px;">${u.name}</div>
+        <div style="width:120px;"><input type="time" id="checkin-${u.name}"></div>
+        <div style="width:120px;"><input type="time" id="checkout-${u.name}"></div>
+        <div style="width:120px;">
+          <select id="status-${u.name}">
+            <option value="Present">Present</option>
+            <option value="Absent">Absent</option>
+            <option value="Leave">Leave</option>
+            <option value="On Duty">On Duty</option>
+          </select>
+        </div>
+        <div style="width:100px;">
+          <button onclick="updateAttendance('${u.name}')">Update</button>
+        </div>
+      `;
+
+      container.appendChild(row);
+    });
+  } catch (err) {
+    console.error("Error loading users:", err);
+  }
+}
+
+// --- Update Attendance ---
+async function updateAttendance(username) {
+  const checkin = document.getElementById(`checkin-${username}`).value;
+  const checkout = document.getElementById(`checkout-${username}`).value;
+  const status = document.getElementById(`status-${username}`).value;
+
+  const res = await fetch("/attendance", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, checkin, checkout, status })
+  });
+
+  const data = await res.json();
+  alert(data.message || "Updated successfully");
+}
+
+// --- Logout ---
+document.getElementById("logout").addEventListener("click", () => {
+  localStorage.removeItem("user");
+  window.location.href = "login.html";
+});
+
+// --- Load users on start ---
+loadUsers();
+</script>
+</body>
+</html>

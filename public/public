@@ -1,0 +1,10 @@
+attendance-tracker/
+│
+├── server.js
+├── package.json
+├── users.json
+├── attendance.json
+└── public/
+    ├── index.html        ← Registration page
+    ├── login.html        ← Login page
+    └── work.html         ← Attendance dashboard (third page ✅)

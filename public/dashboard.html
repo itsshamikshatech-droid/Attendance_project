@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>User Dashboard</title>
+</head>
+<body>
+  <fieldset>
+    <h2>Welcome, <span id="UserName">User</span></h2>
+    <button id="logout" style="float: right;">Logout</button>
+
+    <section id="Today">
+      <h3>Today's Attendance</h3>
+      <p>Status: <span id="Status">--</span></p>
+      <p>Check-in: <span id="CheckIn">--</span></p>
+      <p>Checkout: <span id="CheckOut">--</span></p>
+    </section>
+  </fieldset>
+
+<script>
+const user = JSON.parse(localStorage.getItem("user"));
+if (!user) {
+  alert("Please log in first!");
+  window.location.href = "login.html";
+} else {
+  document.getElementById("UserName").textContent = user.username || user.name || user.email;
+  loadAttendance();
+}
+
+async function loadAttendance() {
+  try {
+    const username = user.username || user.name;
+    const res = await fetch(`/attendance/${encodeURIComponent(username)}`);
+    const data = await res.json();
+
+    document.getElementById("Status").textContent = data.status || "--";
+    document.getElementById("CheckIn").textContent = data.checkin || "--";
+    document.getElementById("CheckOut").textContent = data.checkout || "--";
+  } catch (err) {
+    console.error("Error loading attendance:", err);
+  }
+}
+
+document.getElementById("logout").addEventListener("click", () => {
+  localStorage.removeItem("user");
+  window.location.href = "login.html";
+});
+</script>
+</body>
+</html>
